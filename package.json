@@ -10,6 +10,7 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@expo/vector-icons": "^15.0.2",
     "expo": "~54.0.12",
     "expo-status-bar": "~3.0.8",
     "react": "19.1.0",
