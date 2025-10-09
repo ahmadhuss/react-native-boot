@@ -1,24 +1,25 @@
-import { View, Text, TouchableOpacity, Alert, StyleSheet } from 'react-native';
+import { View, Text, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
-import { theme } from '../theme';
+import { theme } from "@/theme";
 
 type Props = {
   name: string;
   isCompleted?: boolean;
 };
 
-export function ShoppingListItem({ name, isCompleted }: Props) {
+export default function ShoppingListItem({ name, isCompleted }: Props) {
   const handleDelete = (name: string) => {
-    Alert.alert(`Are you sure you want to delete ${name}?`, 'It will be gone for good.', [
+    Alert.alert(`Are you sure you want to delete ${name}?`, "It will be gone for good.", [
       {
-        text: 'Yes',
-        onPress: () => console.log('Deleted'),
-        style: 'destructive'
+        text: "Yes",
+        onPress: () => console.log("Deleted"),
+        style: "destructive"
       },
       {
-        text: 'Cancel',
-        onPress: () => console.log('Not deleted'),
-        style: 'cancel'
+        text: "Cancel",
+        onPress: () => console.log("Not deleted"),
+        style: "cancel"
       }
     ]);
   };
@@ -29,12 +30,12 @@ export function ShoppingListItem({ name, isCompleted }: Props) {
       <Text style={[styles.itemText, isCompleted ? styles.completedText : undefined]}>
         {name}
       </Text>
-      <TouchableOpacity
-        style={[styles.button, isCompleted ? styles.completedButton : undefined]}
-        onPress={() => handleDelete(name)}
-        activeOpacity={0.8}
-      >
-        <Text style={styles.buttonText}>Delete</Text>
+      <TouchableOpacity onPress={() => handleDelete(name)} activeOpacity={0.8}>
+        <AntDesign
+          name="close-circle"
+          size={24}
+          color={isCompleted ? theme.colorGrey : theme.colorRed}
+        />
       </TouchableOpacity>
     </View>
   );
@@ -44,11 +45,11 @@ const styles = StyleSheet.create({
   itemContainer: {
     borderBottomColor: theme.colorCerulean,
     borderBottomWidth: 1,
-    paddingHorizontal: 8,
+    paddingHorizontal: 18,
     paddingVertical: 16,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between'
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between"
   },
   completedContainer: {
     backgroundColor: theme.colorLightGrey,
@@ -56,27 +57,11 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 18,
-    fontWeight: '200'
+    fontWeight: "200"
   },
   completedText: {
-    textDecorationLine: 'line-through',
+    textDecorationLine: "line-through",
     textDecorationColor: theme.colorGrey,
     color: theme.colorGrey
-  },
-  button: {
-    backgroundColor: theme.colorBlack,
-    padding: 8,
-    borderRadius: 6
-  },
-  completedButton: {
-    backgroundColor: theme.colorGrey
-  },
-  buttonText: {
-    color: theme.colorWhite,
-    fontWeight: 'bold',
-    textTransform: 'uppercase',
-    letterSpacing: 1
   }
 });
-
-export default ShoppingListItem;
