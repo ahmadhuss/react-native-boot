@@ -1,7 +1,6 @@
 node_modules
-.next
+.expo
 next-env.d.ts
 yarn.lock
 package-lock.json
 pnpm-lock.yaml
-public
