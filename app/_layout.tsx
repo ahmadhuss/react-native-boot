@@ -20,6 +20,7 @@ export default function RootLayout() {
         name="counter"
         options={{
           title: "Counter",
+          headerShown: false, // This screen has nested Stack we have to only show single header
           tabBarIcon: ({ color, size }) => (
             <AntDesign name="clock-circle" size={size} color={color} />
           )
