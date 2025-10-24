@@ -6,14 +6,15 @@ import { theme } from "@/theme";
 type Props = {
   name: string;
   isCompleted?: boolean;
+  onDelete: () => void;
 };
 
-export default function ShoppingListItem({ name, isCompleted }: Props) {
+export default function ShoppingListItem({ name, isCompleted, onDelete }: Props) {
   const handleDelete = (name: string) => {
     Alert.alert(`Are you sure you want to delete ${name}?`, "It will be gone for good.", [
       {
         text: "Yes",
-        onPress: () => console.log("Deleted"),
+        onPress: () => onDelete(),
         style: "destructive"
       },
       {

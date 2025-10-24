@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, ScrollView, StyleSheet, TextInput } from "react-native";
+import { View, Text, ScrollView, StyleSheet, TextInput, FlatList } from "react-native";
 
 import { theme } from "@/theme";
 
@@ -16,9 +16,19 @@ const initialList: ShoppingListItemType[] = [
   { id: "3", name: "Sugar" }
 ];
 
+const testData = new Array(1000).fill(null).map((_, index) => ({
+  id: index.toString(),
+  name: `Item ${index}`
+}));
+
 export default function Index() {
   const [value, setValue] = useState<string>("");
-  const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>(initialList);
+  const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>([]);
+
+  const handleDelete = (id: string) => {
+    const newShoppingList = shoppingList.filter(item => item.id !== id);
+    setShoppingList(newShoppingList);
+  };
 
   const handleSubmit = () => {
     if (value) {
@@ -32,26 +42,36 @@ export default function Index() {
   };
 
   return (
-    <ScrollView
+    <FlatList
+      data={shoppingList}
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
       stickyHeaderIndices={[0]}
-    >
-      <TextInput
-        style={styles.textInput}
-        placeholder="E.g. Coffee"
-        value={value}
-        onChangeText={setValue}
-        keyboardType="default"
-        autoCorrect={false}
-        returnKeyType="done"
-        onSubmitEditing={handleSubmit} // When Done button is pressed this will call
-      />
-
-      {shoppingList.map((item: ShoppingListItemType) => {
-        return <ShoppingListItem key={item.id} name={item.name} />;
-      })}
-    </ScrollView>
+      renderItem={({ item }: { item: ShoppingListItemType }) => {
+        console.log(item);
+        return (
+          <ShoppingListItem name={item.name} onDelete={() => handleDelete(item.id)} />
+        );
+      }}
+      keyExtractor={(item: ShoppingListItemType) => item.id}
+      ListEmptyComponent={
+        <View style={styles.listEmptyContainer}>
+          <Text>Your Shopping list is empty.</Text>
+        </View>
+      }
+      ListHeaderComponent={
+        <TextInput
+          style={styles.textInput}
+          placeholder="E.g. Coffee"
+          value={value}
+          onChangeText={setValue}
+          keyboardType="default"
+          autoCorrect={false}
+          returnKeyType="done"
+          onSubmitEditing={handleSubmit} // When Done button is pressed this will call
+        />
+      }
+    />
   );
 }
 
@@ -74,5 +94,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     borderRadius: 50,
     backgroundColor: theme.colorWhite
+  },
+  listEmptyContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    marginVertical: 18
   }
 });
