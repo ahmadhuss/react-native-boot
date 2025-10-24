@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, StyleSheet, TextInput } from "react-native";
+import { View, ScrollView, StyleSheet, TextInput } from "react-native";
 
 import { theme } from "@/theme";
 
@@ -32,7 +32,11 @@ export default function Index() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      stickyHeaderIndices={[0]}
+    >
       <TextInput
         style={styles.textInput}
         placeholder="E.g. Coffee"
@@ -47,16 +51,19 @@ export default function Index() {
       {shoppingList.map((item: ShoppingListItemType) => {
         return <ShoppingListItem key={item.id} name={item.name} />;
       })}
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 12,
     flex: 1,
-    backgroundColor: theme.colorWhite
+    backgroundColor: theme.colorWhite,
+    padding: 12
     // justifyContent: "center"
+  },
+  contentContainer: {
+    paddingBottom: 24
   },
   textInput: {
     borderColor: theme.colorLightGrey,
@@ -65,6 +72,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 12,
     marginBottom: 12,
     fontSize: 18,
-    borderRadius: 50
+    borderRadius: 50,
+    backgroundColor: theme.colorWhite
   }
 });
