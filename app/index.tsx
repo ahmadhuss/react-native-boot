@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, ScrollView, StyleSheet, TextInput, FlatList } from "react-native";
 
 import { theme } from "@/theme";
 
 import ShoppingListItem from "@/components/ShoppingListItem";
+import { getFromStorage, saveStorage } from "@/utils/storage";
+
+const storageKey = "shopping-list";
 
 type ShoppingListItemType = {
   id: string;
@@ -28,6 +31,23 @@ export default function Index() {
   const [value, setValue] = useState<string>("");
   const [shoppingList, setShoppingList] = useState<ShoppingListItemType[]>([]);
 
+  useEffect(() => {
+    const fetchInitial = async () => {
+      try {
+        const data = await getFromStorage(storageKey);
+        if (data) {
+          setShoppingList(data);
+        }
+      } catch (error) {
+        console.error("Failed to load shopping list:", error);
+      }
+    };
+
+    fetchInitial().catch(error => {
+      console.error("Error in fetchInitial:", error);
+    });
+  }, []);
+
   const handleSubmit = () => {
     if (value) {
       const newShoppingList = [
@@ -35,12 +55,14 @@ export default function Index() {
         ...shoppingList
       ];
       setShoppingList(newShoppingList);
+      saveStorage(storageKey, newShoppingList);
       setValue("");
     }
   };
 
   const handleDelete = (id: string) => {
     const newShoppingList = shoppingList.filter(item => item.id !== id);
+    saveStorage(storageKey, newShoppingList);
     setShoppingList(newShoppingList);
   };
 
@@ -55,6 +77,7 @@ export default function Index() {
       }
       return item;
     });
+    saveStorage(storageKey, newShoppingList);
     setShoppingList(newShoppingList);
   };
 
