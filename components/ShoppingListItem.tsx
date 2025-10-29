@@ -1,5 +1,6 @@
-import { View, Text, TouchableOpacity, Alert, StyleSheet } from "react-native";
+import { View, Text, TouchableOpacity, Alert, StyleSheet, Pressable } from "react-native";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import Entypo from "@expo/vector-icons/Entypo";
 
 import { theme } from "@/theme";
 
@@ -7,9 +8,15 @@ type Props = {
   name: string;
   isCompleted?: boolean;
   onDelete: () => void;
+  onToggleComplete: () => void;
 };
 
-export default function ShoppingListItem({ name, isCompleted, onDelete }: Props) {
+export default function ShoppingListItem({
+  name,
+  isCompleted,
+  onDelete,
+  onToggleComplete
+}: Props) {
   const handleDelete = (name: string) => {
     Alert.alert(`Are you sure you want to delete ${name}?`, "It will be gone for good.", [
       {
@@ -25,12 +32,26 @@ export default function ShoppingListItem({ name, isCompleted, onDelete }: Props)
     ]);
   };
   return (
-    <View
+    <Pressable
       style={[styles.itemContainer, isCompleted ? styles.completedContainer : undefined]}
+      onPress={onToggleComplete}
     >
-      <Text style={[styles.itemText, isCompleted ? styles.completedText : undefined]}>
-        {name}
-      </Text>
+      {/* Item Text */}
+      <View style={styles.row}>
+        <Entypo
+          name={isCompleted ? "check" : "circle"}
+          size={24}
+          color={isCompleted ? theme.colorGrey : theme.colorCerulean}
+        />
+        <Text
+          style={[styles.itemText, isCompleted ? styles.completedText : undefined]}
+          numberOfLines={1} // Truncate the text
+        >
+          {name}
+        </Text>
+      </View>
+
+      {/* Delete Button */}
       <TouchableOpacity onPress={() => handleDelete(name)} activeOpacity={0.8}>
         <AntDesign
           name="close-circle"
@@ -38,7 +59,7 @@ export default function ShoppingListItem({ name, isCompleted, onDelete }: Props)
           color={isCompleted ? theme.colorGrey : theme.colorRed}
         />
       </TouchableOpacity>
-    </View>
+    </Pressable>
   );
 }
 
@@ -50,7 +71,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between"
+    justifyContent: "flex-start"
   },
   completedContainer: {
     backgroundColor: theme.colorLightGrey,
@@ -58,11 +79,17 @@ const styles = StyleSheet.create({
   },
   itemText: {
     fontSize: 18,
-    fontWeight: "200"
+    fontWeight: "200",
+    flex: 1 // fill all the available space
   },
   completedText: {
     textDecorationLine: "line-through",
     textDecorationColor: theme.colorGrey,
     color: theme.colorGrey
+  },
+  row: {
+    flexDirection: "row", // If you use flex-direction:row then you can add gap property
+    gap: 8,
+    flex: 1 // fill all the available space
   }
 });
