@@ -1,5 +1,15 @@
 import { useState, useEffect } from "react";
-import { View, Text, ScrollView, StyleSheet, TextInput, FlatList } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  StyleSheet,
+  TextInput,
+  FlatList,
+  LayoutAnimation
+} from "react-native";
+
+import * as Haptics from "expo-haptics";
 
 import { theme } from "@/theme";
 
@@ -36,6 +46,7 @@ export default function Index() {
       try {
         const data = await getFromStorage(storageKey);
         if (data) {
+          LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
           setShoppingList(data);
         }
       } catch (error) {
@@ -54,6 +65,7 @@ export default function Index() {
         { id: new Date().toTimeString(), name: value, lastUpdatedTimestamp: Date.now() },
         ...shoppingList
       ];
+      LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
       setShoppingList(newShoppingList);
       saveStorage(storageKey, newShoppingList);
       setValue("");
@@ -63,12 +75,20 @@ export default function Index() {
   const handleDelete = (id: string) => {
     const newShoppingList = shoppingList.filter(item => item.id !== id);
     saveStorage(storageKey, newShoppingList);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Vibrate
     setShoppingList(newShoppingList);
   };
 
   const handleToggleComplete = (id: string) => {
     const newShoppingList = shoppingList.map(item => {
       if (item.id === id) {
+        if (item.completedAtTimestamp) {
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); // Vibrate
+        } else {
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+        }
+
         return {
           ...item,
           lastUpdatedTimestamp: Date.now(),
@@ -78,6 +98,7 @@ export default function Index() {
       return item;
     });
     saveStorage(storageKey, newShoppingList);
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
     setShoppingList(newShoppingList);
   };
 
